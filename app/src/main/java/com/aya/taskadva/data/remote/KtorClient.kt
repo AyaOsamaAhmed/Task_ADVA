@@ -1,5 +1,6 @@
 package com.aya.taskadva.data.remote
 
+import com.aya.taskadva.utils.Constant.BASE_URL
 import io.ktor.client.*
 import io.ktor.client.engine.android.*
 import io.ktor.client.features.*
@@ -12,7 +13,6 @@ import kotlinx.serialization.json.Json
 
 object KtorClient {
 
-    private val BASE_URL: String = ""
     private const val AUTHORIZATION_HEADER = "Authorization"
 
     private val client = HttpClient(Android) {
