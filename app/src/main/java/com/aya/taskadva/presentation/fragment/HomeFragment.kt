@@ -12,15 +12,18 @@ import androidx.navigation.fragment.NavHostFragment
 import com.aya.taskadva.R
 import com.aya.taskadva.databinding.HomeFragmentBinding
 import com.aya.taskadva.domain.model.SourceModel
-import com.aya.taskadva.domain.response.MainResponse
 import com.aya.taskadva.presentation.activity.MainActivity
+import com.aya.taskadva.presentation.adapter.PhotoAdapter
+import com.aya.taskadva.presentation.interfaces.onClick
 import com.aya.taskadva.presentation.viewModel.HomeViewModel
 
 
-class HomeFragment : Fragment()  {
+class HomeFragment : Fragment() , onClick {
 
     private lateinit var binding : HomeFragmentBinding
     private lateinit var viewModel : HomeViewModel
+
+    private lateinit var adapter : PhotoAdapter
 
     val mainActivity  by lazy { activity as MainActivity }
 
@@ -42,10 +45,17 @@ class HomeFragment : Fragment()  {
         viewModel.requestDataLiveData.observe(viewLifecycleOwner, Observer {
             val data = it as ArrayList<SourceModel>
             Log.d("HomeFragment", "data size:${data.size}")
+            adapter = PhotoAdapter(this)
+        //    adapter.submitData(data)
+            binding.recyclerPhoto.setAdapter(adapter)
         })
 
 
         return binding.root
+    }
+
+    override fun onClickPhoto(photoUrl: String) {
+
     }
 
 
