@@ -12,10 +12,20 @@ import androidx.navigation.fragment.NavHostFragment
 import com.aya.taskadva.R
 import com.aya.taskadva.databinding.HomeFragmentBinding
 import com.aya.taskadva.domain.model.SourceModel
-import com.aya.taskadva.presentation.activity.MainActivity
 import com.aya.taskadva.presentation.adapter.PhotoAdapter
 import com.aya.taskadva.presentation.interfaces.onClick
 import com.aya.taskadva.presentation.viewModel.HomeViewModel
+
+import com.aya.taskadva.presentation.activity.MainActivity
+
+import android.content.Intent
+import android.media.Image
+import androidx.lifecycle.lifecycleScope
+import com.aya.taskadva.data.local.PhotoDataBase
+import com.aya.taskadva.data.local.TBPhotoModel
+import com.bumptech.glide.Glide
+import com.stfalcon.imageviewer.StfalconImageViewer
+import kotlinx.coroutines.launch
 
 
 class HomeFragment : Fragment() , onClick {
@@ -24,8 +34,9 @@ class HomeFragment : Fragment() , onClick {
     private lateinit var viewModel : HomeViewModel
 
     private lateinit var adapter : PhotoAdapter
+    private lateinit var photoDataBase: PhotoDataBase
 
-    val mainActivity  by lazy { activity as MainActivity }
+   private val mainActivity  by lazy { activity as MainActivity }
 
     private val navController by lazy {
         val navHostFragment = activity?.supportFragmentManager
@@ -42,19 +53,37 @@ class HomeFragment : Fragment() , onClick {
         binding = HomeFragmentBinding.inflate(inflater , container , false)
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
+        photoDataBase = PhotoDataBase.getInstance(requireContext())
+
+        lifecycleScope.launch {
+         if( photoDataBase.photosDataBaseDao.getSize() == 0 )
+             viewModel.getList()
+
+            Log.d("HomeFragment", "get data")
+        }
+
         viewModel.requestDataLiveData.observe(viewLifecycleOwner, Observer {
-            val data = it as ArrayList<SourceModel>
+            val data = it as ArrayList<TBPhotoModel>
             Log.d("HomeFragment", "data size:${data.size}")
-            adapter = PhotoAdapter(this)
+            viewModel.setInsertPhoto(photoDataBase , data )
+         //   adapter = PhotoAdapter(this)
         //    adapter.submitData(data)
-            binding.recyclerPhoto.setAdapter(adapter)
+        //    binding.recyclerPhoto.setAdapter(adapter)
         })
+
 
 
         return binding.root
     }
 
     override fun onClickPhoto(photoUrl: String) {
+        val images: MutableList<String> = ArrayList()
+        images.add(photoUrl.plus(".jpg"))
+        StfalconImageViewer.Builder<String>(context, images) { view, image ->
+           // Picasso.get().load(image.url).into(view)
+            Glide.with(requireContext()).load(image).into(view)
+    }.show()
+
 
     }
 

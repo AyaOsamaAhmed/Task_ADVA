@@ -24,6 +24,7 @@ class PhotoAdapter (val action : onClick) : PagingDataAdapter<SourceModel, Photo
 
     override fun onBindViewHolder(holder: subViewHolder, position: Int) {
         holder.bind(getItem(position)!!)
+
     }
 
     class DiffUtilCallBack: DiffUtil.ItemCallback<SourceModel>() {
@@ -32,7 +33,7 @@ class PhotoAdapter (val action : onClick) : PagingDataAdapter<SourceModel, Photo
         }
 
         override fun areContentsTheSame(oldItem: SourceModel, newItem: SourceModel): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem == newItem
 
         }
 
