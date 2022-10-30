@@ -5,7 +5,7 @@
     <data>
         <variable
             name="model"
-            type="com.aya.taskadva.domain.model.SourceModel" />
+            type="com.aya.taskadva.data.local.TBPhotoModel" />
     </data>
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"

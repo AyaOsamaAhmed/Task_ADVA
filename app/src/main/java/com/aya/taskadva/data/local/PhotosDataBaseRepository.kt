@@ -7,8 +7,8 @@ class PhotosDataBaseRepository(val photosDao : PhotosDataBaseDao) {
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun getAllPhotos(limit : Int , offset: Int){
-        photosDao.getAllPhotos(limit , offset)
+    suspend fun getAllPhotos(limit : Int , offset: Int):List<TBPhotoModel>? {
+       return photosDao.getAllPhotos(limit , offset)
     }
 
     @Suppress("RedundantSuspendModifier")

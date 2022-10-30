@@ -4,13 +4,19 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.aya.taskadva.data.local.PhotoDataBase
 import com.aya.taskadva.data.local.PhotosDataBaseRepository
 import com.aya.taskadva.data.local.TBPhotoModel
 import com.aya.taskadva.data.remote.Apis
 import com.aya.taskadva.domain.repositories.MainRepo
+import com.aya.taskadva.presentation.adapter.PhotosPagingSource
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel() {
@@ -22,11 +28,9 @@ class HomeViewModel : ViewModel() {
         throwable.printStackTrace()
     }
 
-    lateinit var retroService: Apis
+    lateinit var retroDB: PhotosDataBaseRepository
 
-    init {
-     //   retroService = KtorClient.getInstance
-    }
+
 
     fun setInsertPhoto(instance: PhotoDataBase,models:ArrayList<TBPhotoModel>){
         repository = PhotosDataBaseRepository( instance.photosDataBaseDao)
@@ -43,10 +47,13 @@ class HomeViewModel : ViewModel() {
     }
 
 
-   /* fun getListData(): Flow<PagingData<SourceModel>> {
-        return Pager (config = PagingConfig(pageSize = 10, maxSize = 200),
-            pagingSourceFactory = {ModelPagingSource(retroService)}).flow.cachedIn(viewModelScope)
-    }*/
+    fun getDBListData(instance: PhotoDataBase): Flow<PagingData<TBPhotoModel>> {
+        retroDB = PhotosDataBaseRepository(instance.photosDataBaseDao)
+        return Pager(PagingConfig (pageSize = 10, maxSize = 5000)){
+             PhotosPagingSource(retroDB)}.flow.cachedIn(viewModelScope)
+    }
+
+
     fun getList(){
         viewModelScope.launch(Dispatchers.IO ) {
             requestDataLiveData.postValue(MainRepo.allPhotos())

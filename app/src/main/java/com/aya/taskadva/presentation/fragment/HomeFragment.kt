@@ -25,6 +25,7 @@ import com.aya.taskadva.data.local.PhotoDataBase
 import com.aya.taskadva.data.local.TBPhotoModel
 import com.bumptech.glide.Glide
 import com.stfalcon.imageviewer.StfalconImageViewer
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
@@ -55,6 +56,7 @@ class HomeFragment : Fragment() , onClick {
 
         photoDataBase = PhotoDataBase.getInstance(requireContext())
 
+        adapter = PhotoAdapter(this)
         lifecycleScope.launch {
          if( photoDataBase.photosDataBaseDao.getSize() == 0 )
              viewModel.getList()
@@ -71,6 +73,12 @@ class HomeFragment : Fragment() , onClick {
         //    binding.recyclerPhoto.setAdapter(adapter)
         })
 
+        lifecycleScope.launch{
+            viewModel.getDBListData(photoDataBase).collectLatest {
+                adapter.submitData(it)
+                binding.recyclerPhoto.setAdapter(adapter)
+            }
+        }
 
 
         return binding.root
