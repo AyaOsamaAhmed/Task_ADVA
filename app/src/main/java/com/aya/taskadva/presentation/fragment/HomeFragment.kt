@@ -74,19 +74,22 @@ class HomeFragment : Fragment() , onClick {
         })
 
         lifecycleScope.launch{
-            viewModel.getDBListData(photoDataBase).collectLatest {
+         /*   viewModel.getDBListData(photoDataBase).collectLatest {
                 adapter.submitData(it)
                 binding.recyclerPhoto.setAdapter(adapter)
-            }
+            }*/
+            viewModel.getDBListData(photoDataBase).observe(viewLifecycleOwner, Observer {
+                adapter.submitData(lifecycle,it)
+            })
         }
-
+        binding.recyclerPhoto.setAdapter(adapter)
 
         return binding.root
     }
 
     override fun onClickPhoto(photoUrl: String) {
         val images: MutableList<String> = ArrayList()
-        images.add(photoUrl.plus(".jpg"))
+        images.add(photoUrl)
         StfalconImageViewer.Builder<String>(context, images) { view, image ->
            // Picasso.get().load(image.url).into(view)
             Glide.with(requireContext()).load(image).into(view)

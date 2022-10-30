@@ -10,7 +10,7 @@ class PhotosPagingSource (private val repo: PhotosDataBaseRepository) :PagingSou
 
 
     companion object {
-        private const val STARTING_PAGE_INDEX = 1
+        private const val STARTING_PAGE_INDEX = 0
     }
 
     override fun getRefreshKey(state: PagingState<Int, TBPhotoModel>): Int? {
@@ -25,7 +25,6 @@ class PhotosPagingSource (private val repo: PhotosDataBaseRepository) :PagingSou
         val position = params.key ?: STARTING_PAGE_INDEX
         return try{
 
-            Log.i("","")
             val model = repo.getAllPhotos(params.loadSize,position*params.loadSize)
             LoadResult.Page(
                 data = model!!,

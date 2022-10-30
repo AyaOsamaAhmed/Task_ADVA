@@ -1,13 +1,11 @@
 package com.aya.taskadva.presentation.viewModel
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
+import androidx.paging.*
 import com.aya.taskadva.data.local.PhotoDataBase
 import com.aya.taskadva.data.local.PhotosDataBaseRepository
 import com.aya.taskadva.data.local.TBPhotoModel
@@ -47,11 +45,17 @@ class HomeViewModel : ViewModel() {
     }
 
 
-    fun getDBListData(instance: PhotoDataBase): Flow<PagingData<TBPhotoModel>> {
+ /*   fun getDBListData(instance: PhotoDataBase): Flow<PagingData<TBPhotoModel>> {
         retroDB = PhotosDataBaseRepository(instance.photosDataBaseDao)
         return Pager(PagingConfig (pageSize = 10, maxSize = 5000)){
              PhotosPagingSource(retroDB)}.flow.cachedIn(viewModelScope)
-    }
+    }*/
+ fun getDBListData(instance: PhotoDataBase): LiveData<PagingData<TBPhotoModel>> {
+     retroDB = PhotosDataBaseRepository(instance.photosDataBaseDao)
+     return Pager(PagingConfig (pageSize = 10, maxSize = 5000)){
+         PhotosPagingSource(retroDB)}.liveData
+ }
+
 
 
     fun getList(){

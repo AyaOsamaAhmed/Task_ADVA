@@ -24,8 +24,12 @@ class PhotoAdapter (val action : onClick) : PagingDataAdapter<TBPhotoModel, Phot
     }
 
     override fun onBindViewHolder(holder: subViewHolder, position: Int) {
-        holder.bind(getItem(position)!!)
-
+      val data = getItem(position)!!
+        data.url = data.url.plus(".jpg")
+        holder.bind(data)
+        holder.itemRowBinding.image.setOnClickListener {
+            action.onClickPhoto(data.url)
+        }
     }
 
     class DiffUtilCallBack: DiffUtil.ItemCallback<TBPhotoModel>() {

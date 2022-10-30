@@ -13,7 +13,7 @@ data class TBPhotoModel (
     val albumId : Int,
     val id : Int,
     val title : String ,
-    val url : String ,
+    var url : String ,
     val thumbnailUrl : String
 
 )
